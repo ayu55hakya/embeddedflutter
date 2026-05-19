@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Native Android Screen"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/status_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="UXCam: initializing..."
+            android:textSize="12sp"
+            android:textColor="#666666"
+            android:layout_marginBottom="24dp"
+            android:gravity="center" />
+
+        <!-- PII Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PII Masking"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/email_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email (occluded)"
+            android:inputType="textEmailAddress"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/password_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password (occluded)"
+            android:inputType="textPassword"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Events Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Event Tracking"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_log_event"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Log Native Event" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_log_event_props"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Log Event With Properties" />
+
+        <!-- User Identity Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="User Identity"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_set_identity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Set User Identity (Native)" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_set_properties"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Set User Properties (Native)" />
+
+        <!-- Screen Tagging Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Screen Tagging"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_tag_screen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tag Screen: NativeHome" />
+
+        <!-- Navigation -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Navigation"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/open_flutter_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Open Flutter View"
+            app:backgroundTint="#6750A4" />
+
+    </LinearLayout>
+</ScrollView>
