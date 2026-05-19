@@ -20,7 +20,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven(url = "https://storage.googleapis.com/download.flutter.io")
-        maven(url = settingsDir.parentFile.resolve("flutter_module/build/host/outputs/repo").absolutePath)
+        maven(url = settingsDir.resolve("flutter_module/build/host/outputs/repo").absolutePath)
         maven(url = "https://sdk.uxcam.com/android/")
     }
 }
