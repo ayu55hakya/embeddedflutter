@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(adb devices *)",
+      "Bash(./gradlew installDebug)",
+      "Bash(adb shell *)",
+      "Bash(flutter build *)",
+      "Bash(flutter analyze *)"
+    ]
+  }
+}

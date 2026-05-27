@@ -134,5 +134,75 @@
             android:text="Open Flutter View"
             app:backgroundTint="#6750A4" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/open_webview_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Open WebView"
+            app:backgroundTint="#3D6B4F" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/open_animation_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Open Animation Screen"
+            app:backgroundTint="#C0392B" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/open_lottie_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Open Lottie Animations"
+            app:backgroundTint="#E67E22" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/open_dialogs_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Open Dialogs &amp; Alerts"
+            app:backgroundTint="#1565C0" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/open_compose_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Open Compose Screen"
+            app:backgroundTint="#00796B" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/open_gallery_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Open Image Gallery"
+            app:backgroundTint="#BF360C" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/open_scroll_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Open Scroll Demo"
+            app:backgroundTint="#283593" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/open_dropdown_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Open Dropdown Demo"
+            app:backgroundTint="#2E7D32" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/open_short_break_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="UXCam Short Break"
+            app:backgroundTint="#4527A0" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/open_video_player_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Open Video Player"
+            app:backgroundTint="#212121" />
+
     </LinearLayout>
 </ScrollView>

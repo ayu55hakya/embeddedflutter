@@ -11,7 +11,7 @@ import com.google.android.material.button.MaterialButton
 import com.uxcam.UXCam
 import com.uxcam.datamodel.UXConfig
 import com.uxcam.screenshot.model.UXCamOverlay
-import io.flutter.embedding.android.FlutterActivity
+import android.content.Intent
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         // --- UXCam Initialization (Native side) ---
-        val config = UXConfig.Builder("n5ctt823s8qihkk-us")
+        val config = UXConfig.Builder("leoadf73n5drfy0-us")
             .enableCrashHandling(true)
             .enableIntegrationLogging(true)
             .build()
@@ -77,7 +77,57 @@ class MainActivity : AppCompatActivity() {
 
         // --- Navigation to Flutter ---
         findViewById<MaterialButton>(R.id.open_flutter_button).setOnClickListener {
-            startActivity(FlutterActivity.createDefaultIntent(this))
+            startActivity(Intent(this, CustomFlutterActivity::class.java))
+        }
+
+        // --- Navigation to WebView ---
+        findViewById<MaterialButton>(R.id.open_webview_button).setOnClickListener {
+            startActivity(Intent(this, WebViewActivity::class.java))
+        }
+
+        // --- Navigation to Animation Screen ---
+        findViewById<MaterialButton>(R.id.open_animation_button).setOnClickListener {
+            startActivity(Intent(this, AnimationActivity::class.java))
+        }
+
+        // --- Navigation to Lottie Screen ---
+        findViewById<MaterialButton>(R.id.open_lottie_button).setOnClickListener {
+            startActivity(Intent(this, LottieActivity::class.java))
+        }
+
+        // --- Navigation to Dialogs Screen ---
+        findViewById<MaterialButton>(R.id.open_dialogs_button).setOnClickListener {
+            startActivity(Intent(this, DialogActivity::class.java))
+        }
+
+        // --- Navigation to Compose Screen ---
+        findViewById<MaterialButton>(R.id.open_compose_button).setOnClickListener {
+            startActivity(Intent(this, ComposeActivity::class.java))
+        }
+
+        // --- Navigation to Image Gallery ---
+        findViewById<MaterialButton>(R.id.open_gallery_button).setOnClickListener {
+            startActivity(Intent(this, ImageGalleryActivity::class.java))
+        }
+
+        // --- Navigation to Scroll Demo ---
+        findViewById<MaterialButton>(R.id.open_scroll_button).setOnClickListener {
+            startActivity(Intent(this, ScrollDemoActivity::class.java))
+        }
+
+        // --- Navigation to Dropdown Demo ---
+        findViewById<MaterialButton>(R.id.open_dropdown_button).setOnClickListener {
+            startActivity(Intent(this, DropdownDemoActivity::class.java))
+        }
+
+        // --- Navigation to Short Break Demo ---
+        findViewById<MaterialButton>(R.id.open_short_break_button).setOnClickListener {
+            startActivity(Intent(this, ShortBreakActivity::class.java))
+        }
+
+        // --- Navigation to Video Player ---
+        findViewById<MaterialButton>(R.id.open_video_player_button).setOnClickListener {
+            startActivity(Intent(this, VideoPlayerActivity::class.java))
         }
     }
 }
