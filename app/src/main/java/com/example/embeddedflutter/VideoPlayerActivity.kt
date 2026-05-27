@@ -1,5 +1,6 @@
 package com.example.embeddedflutter
 
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -61,6 +62,7 @@ class VideoPlayerActivity : AppCompatActivity() {
         toolbar.setNavigationOnClickListener { finish() }
 
         videoView        = findViewById(R.id.video_view)
+        videoView.setBackgroundColor(Color.BLACK)
         seekBar          = findViewById(R.id.seek_bar)
         txtCurrentTime   = findViewById(R.id.txt_current_time)
         txtDuration      = findViewById(R.id.txt_duration)
@@ -69,6 +71,7 @@ class VideoPlayerActivity : AppCompatActivity() {
         loadingIndicator = findViewById(R.id.loading_indicator)
 
         videoView.setOnPreparedListener { mp ->
+            videoView.background = null
             loadingIndicator.visibility = View.GONE
             mp.isLooping = false
             val dur = videoView.duration
@@ -133,6 +136,7 @@ class VideoPlayerActivity : AppCompatActivity() {
         txtDuration.text = "0:00"
         btnPlayPause.text = "▶"
         txtTitle.text = videos[index].title
+        videoView.setBackgroundColor(Color.BLACK)
         videoView.stopPlayback()
         videoView.setVideoURI(Uri.parse(videos[index].url))
 
