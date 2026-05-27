@@ -15,6 +15,17 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.setViewTreeLifecycleOwner
+import androidx.lifecycle.setViewTreeViewModelStoreOwner
+import androidx.savedstate.SavedStateRegistry
+import androidx.savedstate.SavedStateRegistryController
+import androidx.savedstate.SavedStateRegistryOwner
+import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import io.flutter.plugin.common.StandardMessageCodec
 import io.flutter.plugin.platform.PlatformView
 import io.flutter.plugin.platform.PlatformViewFactory
@@ -24,18 +35,45 @@ class NativeComposeViewFactory : PlatformViewFactory(StandardMessageCodec.INSTAN
         NativeComposePlatformView(context)
 }
 
-class NativeComposePlatformView(context: Context) : PlatformView {
-    private val view = ComposeView(context).apply {
-        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindowOrReleasedFromPool)
-        setContent {
-            MaterialTheme {
-                EmbeddedComposeCard()
+class NativeComposePlatformView(context: Context) : PlatformView,
+    LifecycleOwner, ViewModelStoreOwner, SavedStateRegistryOwner {
+
+    private val lifecycleRegistry = LifecycleRegistry(this)
+    private val store = ViewModelStore()
+    private val savedStateRegistryController = SavedStateRegistryController.create(this)
+
+    override val lifecycle: Lifecycle get() = lifecycleRegistry
+    override val viewModelStore: ViewModelStore get() = store
+    override val savedStateRegistry: SavedStateRegistry
+        get() = savedStateRegistryController.savedStateRegistry
+
+    private val view: ComposeView
+
+    init {
+        savedStateRegistryController.performRestore(null)
+        lifecycleRegistry.currentState = Lifecycle.State.CREATED
+
+        view = ComposeView(context).apply {
+            setViewTreeLifecycleOwner(this@NativeComposePlatformView)
+            setViewTreeViewModelStoreOwner(this@NativeComposePlatformView)
+            setViewTreeSavedStateRegistryOwner(this@NativeComposePlatformView)
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindowOrReleasedFromPool)
+            setContent {
+                MaterialTheme {
+                    EmbeddedComposeCard()
+                }
             }
         }
+
+        lifecycleRegistry.currentState = Lifecycle.State.RESUMED
     }
 
     override fun getView(): View = view
-    override fun dispose() {}
+
+    override fun dispose() {
+        lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
+        store.clear()
+    }
 }
 
 @Composable
