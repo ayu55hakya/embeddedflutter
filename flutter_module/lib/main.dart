@@ -313,6 +313,28 @@ class _FlutterHomePageState extends State<FlutterHomePage> {
               },
               child: const Text('Open Map View'),
             ),
+            const SizedBox(height: 8),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF2E7D32), foregroundColor: Colors.white),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const FlutterLiveActivityPage()),
+                );
+              },
+              child: const Text('Live Activity View'),
+            ),
+            const SizedBox(height: 8),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1565C0), foregroundColor: Colors.white),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const FlutterChatPage()),
+                );
+              },
+              child: const Text('Chat View'),
+            ),
             const SizedBox(height: 24),
 
             // --- Counter (to test interaction tracking) ---
@@ -1863,10 +1885,16 @@ class FlutterVideoPlayerPage extends StatefulWidget {
 
 class _FlutterVideoPlayerPageState extends State<FlutterVideoPlayerPage> {
   static const _videos = [
-    ('Big Blazes',  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'),
-    ('Big Escapes', 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4'),
-    ('Big Fun',     'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4'),
-    ('Joyrides',    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4'),
+    ('Big Blazes',     'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'),
+    ('Big Escapes',    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4'),
+    ('Big Fun',        'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4'),
+    ('Joyrides',       'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4'),
+    ('Big Meltdowns',  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4'),
+    ('On Bullrun',     'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4'),
+    ('Subaru vs VW',   'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackVsVWTiguanA.mp4'),
+    ('VW GTI Review',  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4'),
+    ('What Car?',      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4'),
+    ('Tears of Steel', 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4'),
   ];
 
   VideoPlayerController? _controller;
@@ -2300,7 +2328,7 @@ class _FlutterFABDemoPageState extends State<FlutterFABDemoPage> {
                   FlutterUxcam.logEvent('fab_extended_teal_tap');
                 },
                 icon: const Icon(Icons.send),
-                label: const Text('Send message'),
+                label: OccludeWrapper(child: const Text('Send message')),
               ),
             ),
             const SizedBox(height: 12),
@@ -3371,5 +3399,902 @@ class _FlutterMapDemoPageState extends State<FlutterMapDemoPage>
         ],
       ),
     );
+  }
+}
+
+// ─── Live Activity View ───────────────────────────────────────────────────────
+
+class FlutterLiveActivityPage extends StatefulWidget {
+  const FlutterLiveActivityPage({super.key});
+
+  @override
+  State<FlutterLiveActivityPage> createState() => _FlutterLiveActivityPageState();
+}
+
+class _FlutterLiveActivityPageState extends State<FlutterLiveActivityPage>
+    with SingleTickerProviderStateMixin {
+  late final TabController _tabController;
+  Timer? _ticker;
+  int _tick = 0;
+  bool _livePulse = true;
+
+  // ── Ride ─────────────────────────────────────────────────────────────────
+  int _rideEtaSec = 360;
+  int _rideStep = 1;
+  static const _rideStepLabels = ['Assigned', 'Pickup', 'Riding', 'Done'];
+  static const _rideStatusText = [
+    'Driver Assigned',
+    'En Route to Pickup',
+    'Driver Arrived — Boarding',
+    'Ride in Progress',
+    'Arrived at Destination ✓',
+  ];
+
+  // ── Sports ────────────────────────────────────────────────────────────────
+  int _homeScore = 1;
+  int _awayScore = 0;
+  int _gameMin = 32;
+  int _gameSec = 14;
+  bool _isSecondHalf = false;
+  int _lastEventIdx = 0;
+  static const _matchEvents = [
+    "⚽ 32' — GOAL! Müller scored (GER)",
+    "🟡 38' — Yellow card: Mbappé (FRA)",
+    "⚽ 45+2' — GOAL! Giroud scored (FRA)",
+    "🔄 48' — Sub: Gnabry on for Werner (GER)",
+    "⚽ 56' — GOAL! Kroos scored (GER)",
+    "🎯 63' — Shot on target: Griezmann (FRA)",
+    "⚽ 71' — GOAL! Benzema scored (FRA)",
+    "🟡 78' — Yellow card: Kanté (FRA)",
+    "⚽ 85' — GOAL! Sané scored (GER)",
+    "🔴 90+1' — Red card: Varane (FRA)",
+  ];
+
+  // ── Delivery ──────────────────────────────────────────────────────────────
+  int _deliveryStep = 3;
+  int _deliveryEtaSec = 1080;
+  static const _deliverySteps = [
+    'Order Confirmed',
+    'Picked Up from Seller',
+    'At Sorting Facility',
+    'Out for Delivery',
+    'Delivered ✓',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    FlutterUxcam.tagScreenName('FlutterLiveActivity');
+    _tabController = TabController(length: 3, vsync: this);
+    _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted) return;
+      setState(() {
+        _tick++;
+        _livePulse = !_livePulse;
+        _updateRide();
+        _updateSports();
+        _updateDelivery();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _ticker?.cancel();
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  void _updateRide() {
+    if (_rideEtaSec > 0) _rideEtaSec--;
+    if (_tick == 20 && _rideStep < 2) _rideStep = 2;
+    if (_tick == 40 && _rideStep < 3) _rideStep = 3;
+    if (_rideEtaSec == 0 && _rideStep < 3) _rideStep = 3;
+  }
+
+  void _updateSports() {
+    _gameSec++;
+    if (_gameSec >= 60) { _gameSec = 0; _gameMin++; }
+    if (_gameMin >= 45 && !_isSecondHalf) _isSecondHalf = true;
+    if (_gameMin >= 90) _gameMin = 90;
+    const eventTicks = [0, 6, 13, 16, 24, 31, 39, 46, 53, 58];
+    final idx = eventTicks.indexOf(_tick % 60);
+    if (idx >= 0) {
+      _lastEventIdx = idx % _matchEvents.length;
+      if (_lastEventIdx == 2) _awayScore++;
+      if (_lastEventIdx == 4) _homeScore++;
+      if (_lastEventIdx == 6) _awayScore++;
+      if (_lastEventIdx == 8) _homeScore++;
+    }
+  }
+
+  void _updateDelivery() {
+    if (_deliveryEtaSec > 0) _deliveryEtaSec--;
+    if (_tick == 50 && _deliveryStep < 4) _deliveryStep = 4;
+  }
+
+  // ── Shared helpers ────────────────────────────────────────────────────────
+
+  Widget _liveBadge() => AnimatedOpacity(
+        opacity: _livePulse ? 1.0 : 0.35,
+        duration: const Duration(milliseconds: 300),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+          decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(10)),
+          child: const Text('● LIVE',
+              style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
+        ),
+      );
+
+  Widget _sectionCard({required Widget child}) => Card(
+        margin: const EdgeInsets.fromLTRB(12, 0, 12, 14),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        elevation: 3,
+        child: Padding(padding: const EdgeInsets.all(16), child: child),
+      );
+
+  Widget _cardHeader(String title) => Row(children: [
+        Expanded(child: Text(title,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
+        _liveBadge(),
+      ]);
+
+  String _fmtTime(int totalSec) {
+    if (totalSec <= 0) return '0:00';
+    return '${totalSec ~/ 60}:${(totalSec % 60).toString().padLeft(2, '0')}';
+  }
+
+  // ── Ride tab ──────────────────────────────────────────────────────────────
+
+  Widget _buildRideTab() {
+    final statusIdx = (_rideStep == 3 && _rideEtaSec <= 0) ? 4 : _rideStep.clamp(0, 3);
+    final progress = [0.1, 0.35, 0.65, 0.85, 1.0][statusIdx];
+    final etaText = _rideEtaSec <= 0 ? 'Here!' : _fmtTime(_rideEtaSec);
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.only(top: 14, bottom: 24),
+      child: _sectionCard(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        _cardHeader('🚗  Ride Tracking'),
+        const SizedBox(height: 14),
+        Row(children: [
+          const CircleAvatar(
+            radius: 24, backgroundColor: Color(0xFF6750A4),
+            child: Text('S', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+          ),
+          const SizedBox(width: 12),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const Text('Suresh Kumar', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+            Text('⭐ 4.8  ·  KA 01 AB 1234',
+                style: TextStyle(color: Colors.grey.shade600, fontSize: 12)),
+          ])),
+          Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            Text('ETA', style: TextStyle(color: Colors.grey.shade500, fontSize: 11)),
+            Text(etaText, style: const TextStyle(
+                color: Color(0xFF6750A4), fontSize: 26, fontWeight: FontWeight.bold)),
+          ]),
+        ]),
+        const SizedBox(height: 12),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+              color: const Color(0xFFEDE7F6), borderRadius: BorderRadius.circular(8)),
+          child: Text(_rideStatusText[statusIdx],
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  color: Color(0xFF4527A0), fontWeight: FontWeight.bold, fontSize: 14)),
+        ),
+        const SizedBox(height: 12),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: LinearProgressIndicator(
+            value: progress, minHeight: 8,
+            backgroundColor: Colors.grey.shade200,
+            color: const Color(0xFF6750A4),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Row(children: List.generate(4, (i) {
+          final done = i < _rideStep;
+          final active = i == _rideStep;
+          return Expanded(
+            child: Text(
+              done ? '✓ ${_rideStepLabels[i]}' : (active ? '→ ${_rideStepLabels[i]}' : _rideStepLabels[i]),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: active ? FontWeight.bold : FontWeight.normal,
+                color: done ? Colors.green : active ? const Color(0xFF6750A4) : Colors.grey,
+              ),
+            ),
+          );
+        })),
+      ])),
+    );
+  }
+
+  // ── Sports tab ────────────────────────────────────────────────────────────
+
+  Widget _buildSportsTab() {
+    final clock =
+        '${_gameMin.toString().padLeft(2, '0')}:${_gameSec.toString().padLeft(2, '0')}';
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.only(top: 14, bottom: 24),
+      child: _sectionCard(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        _cardHeader('⚽  Live Match'),
+        const SizedBox(height: 16),
+        Row(children: [
+          Expanded(flex: 3, child: Column(children: [
+            const Text('🇩🇪', style: TextStyle(fontSize: 30)),
+            const Text('Germany', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+            Text('$_homeScore', style: const TextStyle(
+                fontSize: 56, fontWeight: FontWeight.bold, color: Color(0xFF1565C0))),
+          ])),
+          Expanded(flex: 2, child: Column(children: [
+            Text(_isSecondHalf ? '2nd Half' : '1st Half',
+                style: TextStyle(color: Colors.grey.shade500, fontSize: 11)),
+            Text(clock, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Text('VS', style: TextStyle(color: Colors.grey.shade300, fontSize: 11)),
+          ])),
+          Expanded(flex: 3, child: Column(children: [
+            const Text('🇫🇷', style: TextStyle(fontSize: 30)),
+            const Text('France', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+            Text('$_awayScore', style: const TextStyle(
+                fontSize: 56, fontWeight: FontWeight.bold, color: Color(0xFFC62828))),
+          ])),
+        ]),
+        const SizedBox(height: 12),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+              color: Colors.grey.shade100, borderRadius: BorderRadius.circular(8)),
+          child: Text(_matchEvents[_lastEventIdx],
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+        ),
+      ])),
+    );
+  }
+
+  // ── Delivery tab ──────────────────────────────────────────────────────────
+
+  Widget _buildDeliveryTab() {
+    final etaText = _deliveryEtaSec <= 0 ? 'Delivered!' : _fmtTime(_deliveryEtaSec);
+    final currentName = _deliverySteps[_deliveryStep.clamp(0, _deliverySteps.length - 1)];
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.only(top: 14, bottom: 24),
+      child: _sectionCard(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        _cardHeader('📦  Delivery Tracking'),
+        const SizedBox(height: 12),
+        Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('ORDER #TRK789456',
+                style: TextStyle(color: Colors.grey.shade500, fontSize: 11)),
+            const SizedBox(height: 2),
+            Text(currentName, style: const TextStyle(
+                color: Color(0xFF00897B), fontWeight: FontWeight.bold, fontSize: 15)),
+          ])),
+          Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            Text('Arrives in', style: TextStyle(color: Colors.grey.shade500, fontSize: 11)),
+            Text(etaText, style: const TextStyle(
+                color: Color(0xFF00897B), fontSize: 22, fontWeight: FontWeight.bold)),
+          ]),
+        ]),
+        const SizedBox(height: 16),
+        ...List.generate(_deliverySteps.length, (i) {
+          final done = i < _deliveryStep;
+          final active = i == _deliveryStep;
+          final dotColor = done
+              ? Colors.green
+              : active ? const Color(0xFF6750A4) : Colors.grey.shade300;
+          final textColor = done
+              ? Colors.green
+              : active ? const Color(0xFF6750A4) : Colors.grey;
+          final dotLabel = done ? '✓' : active ? '→' : '○';
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Row(children: [
+              Container(
+                width: 26, height: 26,
+                decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
+                child: Center(child: Text(dotLabel,
+                    style: TextStyle(
+                        color: done || active ? Colors.white : Colors.grey,
+                        fontSize: 12, fontWeight: FontWeight.bold))),
+              ),
+              const SizedBox(width: 12),
+              Text(_deliverySteps[i], style: TextStyle(
+                  color: textColor, fontSize: 13,
+                  fontWeight: active ? FontWeight.bold : FontWeight.normal)),
+            ]),
+          );
+        }),
+      ])),
+    );
+  }
+
+  // ── Build ─────────────────────────────────────────────────────────────────
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F5F5),
+      appBar: AppBar(
+        title: const Text('Live Activities'),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: const [
+            Tab(icon: Icon(Icons.directions_car), text: 'Ride'),
+            Tab(icon: Icon(Icons.sports_soccer), text: 'Sports'),
+            Tab(icon: Icon(Icons.local_shipping), text: 'Delivery'),
+          ],
+        ),
+      ),
+      body: Column(children: [
+        Container(
+          color: Colors.green.shade600,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Row(children: [
+            const Expanded(
+              child: Text('● 3 Live Activities Running',
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)),
+            ),
+            Text(
+              _tick < 60 ? 'Updated ${_tick}s ago' : 'Updated ${_tick ~/ 60}m ago',
+              style: const TextStyle(color: Colors.white70, fontSize: 11),
+            ),
+          ]),
+        ),
+        Expanded(
+          child: TabBarView(
+            controller: _tabController,
+            children: [_buildRideTab(), _buildSportsTab(), _buildDeliveryTab()],
+          ),
+        ),
+      ]),
+    );
+  }
+}
+
+// ── Chat View ─────────────────────────────────────────────────────────────────
+
+enum _MsgType { text, attach, voice, system }
+
+class _ChatMsg {
+  final int id;
+  final _MsgType type;
+  final String? text;
+  final String? fileName;
+  final String? fileSize;
+  final String? fileEmoji;
+  final String? duration;
+  final String? systemLabel;
+  final bool sent;
+  final List<String> reactions;
+  bool voicePlaying = false;
+  double voiceProgress = 0;
+
+  _ChatMsg({
+    required this.id,
+    required this.type,
+    this.text,
+    this.fileName,
+    this.fileSize,
+    this.fileEmoji,
+    this.duration,
+    this.systemLabel,
+    required this.sent,
+    List<String>? reactions,
+  }) : reactions = reactions ?? [];
+}
+
+class FlutterChatPage extends StatefulWidget {
+  const FlutterChatPage({super.key});
+
+  @override
+  State<FlutterChatPage> createState() => _FlutterChatPageState();
+}
+
+class _FlutterChatPageState extends State<FlutterChatPage>
+    with TickerProviderStateMixin {
+  final _scrollCtrl = ScrollController();
+  final _inputCtrl = TextEditingController();
+  final _focusNode = FocusNode();
+
+  bool _showTyping = false;
+  int _nextId = 20;
+  int _replyIdx = 0;
+  Timer? _replyTimer;
+  Timer? _voiceTimer;
+
+  late AnimationController _dot1Ctrl;
+  late AnimationController _dot2Ctrl;
+  late AnimationController _dot3Ctrl;
+  late Animation<double> _dot1Anim;
+  late Animation<double> _dot2Anim;
+  late Animation<double> _dot3Anim;
+
+  final _autoReplies = const [
+    'Got it! 👍', 'Sure, I\'ll check it out', 'That looks great!',
+    'Thanks for the update 🙏', 'Can you elaborate?', 'Perfect!',
+    'Noted, will update accordingly 📝', 'Interesting! Tell me more',
+    'On it! 🚀', 'Makes sense, thanks!',
+  ];
+
+  final List<_ChatMsg> _messages = [
+    _ChatMsg(id: 0, type: _MsgType.system, systemLabel: 'Today', sent: false),
+    _ChatMsg(id: 1, type: _MsgType.text, text: 'Hey! How are you doing? 👋', sent: false),
+    _ChatMsg(id: 2, type: _MsgType.text, text: 'I\'m doing great, thanks! Working on the new app 😄', sent: true),
+    _ChatMsg(id: 3, type: _MsgType.text, text: 'Nice! Can you share the design files?', sent: false),
+    _ChatMsg(id: 4, type: _MsgType.attach, fileName: 'design_mockup.png', fileSize: '2.4 MB', fileEmoji: '🖼️', sent: true),
+    _ChatMsg(id: 5, type: _MsgType.text, text: 'Looks absolutely amazing! 🔥', sent: false, reactions: ['❤️', '🎉']),
+    _ChatMsg(id: 6, type: _MsgType.voice, duration: '0:23', sent: true),
+    _ChatMsg(id: 7, type: _MsgType.text, text: 'Got your voice note! Sounds good 👍', sent: false),
+    _ChatMsg(id: 8, type: _MsgType.attach, fileName: 'project_brief.pdf', fileSize: '512 KB', fileEmoji: '📄', sent: false),
+    _ChatMsg(id: 9, type: _MsgType.text, text: 'I\'ll review and get back to you 🙏', sent: true),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    FlutterUxcam.tagScreenName('FlutterChat');
+
+    _dot1Ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 600))..repeat(reverse: true);
+    _dot2Ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 600))..repeat(reverse: true);
+    _dot3Ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 600))..repeat(reverse: true);
+
+    Future.delayed(const Duration(milliseconds: 180), () => _dot2Ctrl.forward(from: 0));
+    Future.delayed(const Duration(milliseconds: 360), () => _dot3Ctrl.forward(from: 0));
+
+    _dot1Anim = Tween<double>(begin: 0.5, end: 1.3).animate(CurvedAnimation(parent: _dot1Ctrl, curve: Curves.easeInOut));
+    _dot2Anim = Tween<double>(begin: 0.5, end: 1.3).animate(CurvedAnimation(parent: _dot2Ctrl, curve: Curves.easeInOut));
+    _dot3Anim = Tween<double>(begin: 0.5, end: 1.3).animate(CurvedAnimation(parent: _dot3Ctrl, curve: Curves.easeInOut));
+  }
+
+  @override
+  void dispose() {
+    _replyTimer?.cancel();
+    _voiceTimer?.cancel();
+    _dot1Ctrl.dispose();
+    _dot2Ctrl.dispose();
+    _dot3Ctrl.dispose();
+    _scrollCtrl.dispose();
+    _inputCtrl.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _sendText(String text) {
+    setState(() {
+      _messages.add(_ChatMsg(id: _nextId++, type: _MsgType.text, text: text, sent: true));
+    });
+    FlutterUxcam.logEvent('chat_message_sent');
+    _scrollBottom();
+    _triggerAutoReply();
+  }
+
+  void _sendVoice() {
+    final durations = ['0:08', '0:12', '0:19', '0:31', '0:45'];
+    durations.shuffle();
+    setState(() {
+      _messages.add(_ChatMsg(id: _nextId++, type: _MsgType.voice, duration: durations.first, sent: true));
+    });
+    FlutterUxcam.logEvent('chat_voice_note_sent');
+    _scrollBottom();
+    _triggerAutoReply();
+  }
+
+  void _triggerAutoReply() {
+    _replyTimer?.cancel();
+    setState(() => _showTyping = true);
+    _replyTimer = Timer(const Duration(milliseconds: 3800), () {
+      final reply = _autoReplies[_replyIdx % _autoReplies.length];
+      _replyIdx++;
+      setState(() {
+        _showTyping = false;
+        _messages.add(_ChatMsg(id: _nextId++, type: _MsgType.text, text: reply, sent: false));
+      });
+      _scrollBottom();
+    });
+  }
+
+  void _scrollBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollCtrl.hasClients) {
+        _scrollCtrl.animateTo(
+          _scrollCtrl.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  void _showReactionPicker(int index) {
+    final emojis = ['❤️', '👍', '😂', '😮', '😢', '🔥', '👏', '🎉'];
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => Wrap(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Text('React', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: emojis.map((e) => GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                  setState(() => _messages[index].reactions.add(e));
+                  FlutterUxcam.logEvent('chat_reaction_added');
+                },
+                child: Text(e, style: const TextStyle(fontSize: 28)),
+              )).toList(),
+            ),
+          ),
+          const SizedBox(height: 16),
+        ],
+      ),
+    );
+  }
+
+  void _showAttachPicker() {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Text('Share', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+          ),
+          ListTile(
+            leading: const Text('🖼️', style: TextStyle(fontSize: 22)),
+            title: const Text('Photo / Image'),
+            onTap: () {
+              Navigator.pop(context);
+              setState(() {
+                _messages.add(_ChatMsg(id: _nextId, type: _MsgType.attach, fileName: 'photo_$_nextId.jpg', fileSize: '1.${2 + (_nextId % 8)} MB', fileEmoji: '🖼️', sent: true));
+                _nextId++;
+              });
+              FlutterUxcam.logEvent('chat_attachment_sent');
+              _scrollBottom();
+              _triggerAutoReply();
+            },
+          ),
+          ListTile(
+            leading: const Text('📄', style: TextStyle(fontSize: 22)),
+            title: const Text('Document / File'),
+            onTap: () {
+              Navigator.pop(context);
+              setState(() {
+                _messages.add(_ChatMsg(id: _nextId, type: _MsgType.attach, fileName: 'document_$_nextId.pdf', fileSize: '${200 + (_nextId * 37) % 700} KB', fileEmoji: '📄', sent: true));
+                _nextId++;
+              });
+              FlutterUxcam.logEvent('chat_attachment_sent');
+              _scrollBottom();
+              _triggerAutoReply();
+            },
+          ),
+          ListTile(
+            leading: const Text('📍', style: TextStyle(fontSize: 22)),
+            title: const Text('Location'),
+            onTap: () {
+              Navigator.pop(context);
+              setState(() {
+                _messages.add(_ChatMsg(id: _nextId++, type: _MsgType.attach, fileName: 'Location pin', fileSize: 'Google Maps', fileEmoji: '📍', sent: true));
+              });
+              FlutterUxcam.logEvent('chat_attachment_sent');
+              _scrollBottom();
+              _triggerAutoReply();
+            },
+          ),
+          const SizedBox(height: 8),
+        ],
+      ),
+    );
+  }
+
+  void _playVoice(int index) {
+    final msg = _messages[index];
+    if (msg.voicePlaying) {
+      setState(() => msg.voicePlaying = false);
+      _voiceTimer?.cancel();
+      return;
+    }
+    setState(() => msg.voicePlaying = true);
+    FlutterUxcam.logEvent('chat_voice_note_played');
+    _voiceTimer = Timer.periodic(const Duration(milliseconds: 150), (t) {
+      if (!mounted) { t.cancel(); return; }
+      setState(() {
+        msg.voiceProgress += 5;
+        if (msg.voiceProgress >= 100) {
+          msg.voiceProgress = 0;
+          msg.voicePlaying = false;
+          t.cancel();
+        }
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFEDE7F6),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF6750A4),
+        foregroundColor: Colors.white,
+        title: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Alex', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            Text('Online', style: TextStyle(fontSize: 12, color: Color(0xCCFFFFFF))),
+          ],
+        ),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              controller: _scrollCtrl,
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              itemCount: _messages.length,
+              itemBuilder: (ctx, i) => _buildMsgItem(i),
+            ),
+          ),
+          if (_showTyping) _buildTypingIndicator(),
+          _buildInputBar(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMsgItem(int i) {
+    final msg = _messages[i];
+    if (msg.type == _MsgType.system) {
+      return Center(
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+          decoration: BoxDecoration(color: const Color(0xFFE0E0E0), borderRadius: BorderRadius.circular(12)),
+          child: Text(msg.systemLabel ?? '', style: const TextStyle(fontSize: 11, color: Color(0xFF757575))),
+        ),
+      );
+    }
+
+    final sent = msg.sent;
+    return GestureDetector(
+      onLongPress: () => _showReactionPicker(i),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+        child: Row(
+          mainAxisAlignment: sent ? MainAxisAlignment.end : MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            if (!sent) ...[
+              CircleAvatar(
+                radius: 16,
+                backgroundColor: const Color(0xFF6750A4),
+                child: const Text('A', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)),
+              ),
+              const SizedBox(width: 8),
+            ],
+            Column(
+              crossAxisAlignment: sent ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              children: [
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 268),
+                  child: Card(
+                    color: sent ? const Color(0xFF6750A4) : Colors.white,
+                    elevation: 1,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _buildMsgContent(msg, sent),
+                          const SizedBox(height: 4),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                _msgTime(),
+                                style: TextStyle(fontSize: 10, color: sent ? const Color(0xCCE8D5F5) : const Color(0xFFBDBDBD)),
+                              ),
+                              if (sent) const Text(' ✓✓', style: TextStyle(fontSize: 10, color: Color(0xFF80CBC4))),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                if (msg.reactions.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: msg.reactions.map((e) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 2),
+                        child: Text(e, style: const TextStyle(fontSize: 16)),
+                      )).toList(),
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMsgContent(_ChatMsg msg, bool sent) {
+    final textColor = sent ? Colors.white : const Color(0xFF212121);
+    switch (msg.type) {
+      case _MsgType.text:
+        return Text(msg.text ?? '', style: TextStyle(fontSize: 14, color: textColor, height: 1.2));
+      case _MsgType.attach:
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40, height: 40,
+              decoration: BoxDecoration(
+                color: sent ? const Color(0xFF9C8BC2) : const Color(0xFFEDE7F6),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(child: Text(msg.fileEmoji ?? '📎', style: const TextStyle(fontSize: 18))),
+            ),
+            const SizedBox(width: 8),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(msg.fileName ?? '', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: textColor), maxLines: 1, overflow: TextOverflow.ellipsis),
+                Text(msg.fileSize ?? '', style: TextStyle(fontSize: 11, color: sent ? const Color(0xCCE8D5F5) : const Color(0xFF9E9E9E))),
+              ],
+            ),
+          ],
+        );
+      case _MsgType.voice:
+        return SizedBox(
+          width: 200,
+          child: Row(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  final idx = _messages.indexOf(msg);
+                  if (idx >= 0) _playVoice(idx);
+                },
+                child: Icon(
+                  msg.voicePlaying ? Icons.pause_circle_filled : Icons.play_circle_filled,
+                  color: sent ? Colors.white : const Color(0xFF6750A4),
+                  size: 32,
+                ),
+              ),
+              Expanded(
+                child: SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    thumbColor: sent ? Colors.white : const Color(0xFF6750A4),
+                    activeTrackColor: sent ? const Color(0xCCE8D5F5) : const Color(0xFF6750A4),
+                    inactiveTrackColor: sent ? const Color(0x556750A4) : const Color(0xFFCCBBEF),
+                    trackHeight: 2,
+                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
+                    overlayShape: SliderComponentShape.noOverlay,
+                  ),
+                  child: Slider(
+                    value: msg.voiceProgress,
+                    min: 0, max: 100,
+                    onChanged: (_) {},
+                  ),
+                ),
+              ),
+              Text(msg.duration ?? '', style: TextStyle(fontSize: 11, color: sent ? const Color(0xCCE8D5F5) : const Color(0xFF9E9E9E))),
+            ],
+          ),
+        );
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+
+  Widget _buildTypingIndicator() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 17,
+            backgroundColor: const Color(0xFF6750A4),
+            child: const Text('A', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+          ),
+          const SizedBox(width: 8),
+          Card(
+            color: Colors.white,
+            elevation: 1,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              child: Row(
+                children: [
+                  _buildDot(_dot1Anim),
+                  const SizedBox(width: 4),
+                  _buildDot(_dot2Anim),
+                  const SizedBox(width: 4),
+                  _buildDot(_dot3Anim),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          const Text('Alex is typing…', style: TextStyle(fontSize: 12, color: Color(0xFF9E9E9E), fontStyle: FontStyle.italic)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDot(Animation<double> anim) {
+    return AnimatedBuilder(
+      animation: anim,
+      builder: (_, _) => Transform.scale(
+        scale: anim.value,
+        child: Container(width: 8, height: 8, decoration: const BoxDecoration(color: Color(0xFF6750A4), shape: BoxShape.circle)),
+      ),
+    );
+  }
+
+  Widget _buildInputBar() {
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.all(8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.add, color: Color(0xFF6750A4)),
+            onPressed: _showAttachPicker,
+          ),
+          Expanded(
+            child: TextField(
+              controller: _inputCtrl,
+              focusNode: _focusNode,
+              maxLines: 4,
+              minLines: 1,
+              decoration: const InputDecoration(hintText: 'Message', border: InputBorder.none),
+            ),
+          ),
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: _inputCtrl,
+            builder: (_, val, _) {
+              final hasText = val.text.trim().isNotEmpty;
+              return IconButton(
+                icon: Icon(hasText ? Icons.send : Icons.mic, color: const Color(0xFF6750A4)),
+                onPressed: () {
+                  final text = _inputCtrl.text.trim();
+                  if (text.isNotEmpty) {
+                    _inputCtrl.clear();
+                    _sendText(text);
+                  } else {
+                    _sendVoice();
+                  }
+                },
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _msgTime() {
+    final now = DateTime.now();
+    return '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
   }
 }

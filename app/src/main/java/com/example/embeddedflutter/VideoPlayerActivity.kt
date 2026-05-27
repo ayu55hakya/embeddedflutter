@@ -32,10 +32,16 @@ class VideoPlayerActivity : AppCompatActivity() {
     private data class VideoItem(val title: String, val url: String)
 
     private val videos = listOf(
-        VideoItem("Big Blazes",  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"),
-        VideoItem("Big Escapes", "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"),
-        VideoItem("Big Fun",     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"),
-        VideoItem("Joyrides",    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"),
+        VideoItem("Big Blazes",      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"),
+        VideoItem("Big Escapes",     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"),
+        VideoItem("Big Fun",         "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"),
+        VideoItem("Joyrides",        "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"),
+        VideoItem("Big Meltdowns",   "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4"),
+        VideoItem("On Bullrun",      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4"),
+        VideoItem("Subaru vs VW",    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackVsVWTiguanA.mp4"),
+        VideoItem("VW GTI Review",   "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4"),
+        VideoItem("What Car?",       "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4"),
+        VideoItem("Tears of Steel",  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4"),
     )
 
     private val progressUpdater = object : Runnable {

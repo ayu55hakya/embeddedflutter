@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:titleTextColor="@android:color/white" />
+
+        <!-- Global live banner -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            app:cardBackgroundColor="#4CAF50"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="● 3 Live Activities Running"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tv_last_update"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="just now"
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ══════════════ RIDE TRACKING ══════════════ -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginBottom="12dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="3dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Card header -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="🚗  Ride Tracking"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="#F44336"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="0dp">
+                        <TextView
+                            android:id="@+id/tv_live_ride"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="3dp"
+                            android:text="● LIVE"
+                            android:textColor="@android:color/white"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
+                <!-- Driver row + ETA -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="46dp"
+                        android:layout_height="46dp"
+                        app:cardBackgroundColor="#6750A4"
+                        app:cardCornerRadius="23dp"
+                        app:cardElevation="0dp">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="S"
+                            android:gravity="center"
+                            android:textColor="@android:color/white"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="10dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Suresh Kumar"
+                            android:textStyle="bold"
+                            android:textSize="14sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="⭐ 4.8  ·  KA 01 AB 1234"
+                            android:textColor="#777777"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="ETA"
+                            android:textColor="#999999"
+                            android:textSize="11sp" />
+                        <TextView
+                            android:id="@+id/tv_ride_eta"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="6:00"
+                            android:textColor="#6750A4"
+                            android:textSize="26sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Status badge -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    app:cardBackgroundColor="#EDE7F6"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp">
+                    <TextView
+                        android:id="@+id/tv_ride_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="En Route to Pickup"
+                        android:textColor="#4527A0"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:gravity="center" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Progress bar -->
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/pb_ride"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:progress="25"
+                    android:max="100"
+                    app:trackCornerRadius="4dp"
+                    app:trackColor="#E0E0E0" />
+
+                <!-- Step labels -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView android:id="@+id/tv_ride_s0" android:layout_width="0dp"
+                        android:layout_height="wrap_content" android:layout_weight="1"
+                        android:text="Assigned" android:textSize="10sp" android:gravity="center"
+                        android:textColor="#9E9E9E" />
+                    <TextView android:id="@+id/tv_ride_s1" android:layout_width="0dp"
+                        android:layout_height="wrap_content" android:layout_weight="1"
+                        android:text="Pickup" android:textSize="10sp" android:gravity="center"
+                        android:textColor="#9E9E9E" />
+                    <TextView android:id="@+id/tv_ride_s2" android:layout_width="0dp"
+                        android:layout_height="wrap_content" android:layout_weight="1"
+                        android:text="Riding" android:textSize="10sp" android:gravity="center"
+                        android:textColor="#9E9E9E" />
+                    <TextView android:id="@+id/tv_ride_s3" android:layout_width="0dp"
+                        android:layout_height="wrap_content" android:layout_weight="1"
+                        android:text="Done" android:textSize="10sp" android:gravity="center"
+                        android:textColor="#9E9E9E" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ══════════════ SPORTS SCORES ══════════════ -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginBottom="12dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="3dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Card header -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="14dp">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="⚽  Live Match"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="#F44336"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="0dp">
+                        <TextView
+                            android:id="@+id/tv_live_sports"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="3dp"
+                            android:text="● LIVE"
+                            android:textColor="@android:color/white"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
+                <!-- Score row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="10dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:orientation="vertical"
+                        android:gravity="center">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🇩🇪"
+                            android:textSize="28sp"
+                            android:gravity="center" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Germany"
+                            android:textStyle="bold"
+                            android:textSize="13sp"
+                            android:gravity="center" />
+                        <TextView
+                            android:id="@+id/tv_home_score"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="1"
+                            android:textSize="52sp"
+                            android:textStyle="bold"
+                            android:textColor="#1565C0"
+                            android:gravity="center" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:orientation="vertical"
+                        android:gravity="center">
+                        <TextView
+                            android:id="@+id/tv_sport_half"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="1st Half"
+                            android:textSize="11sp"
+                            android:textColor="#999999"
+                            android:gravity="center" />
+                        <TextView
+                            android:id="@+id/tv_game_clock"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="32:14"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            android:gravity="center" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="VS"
+                            android:textSize="11sp"
+                            android:textColor="#BBBBBB"
+                            android:gravity="center" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:orientation="vertical"
+                        android:gravity="center">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🇫🇷"
+                            android:textSize="28sp"
+                            android:gravity="center" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="France"
+                            android:textStyle="bold"
+                            android:textSize="13sp"
+                            android:gravity="center" />
+                        <TextView
+                            android:id="@+id/tv_away_score"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textSize="52sp"
+                            android:textStyle="bold"
+                            android:textColor="#C62828"
+                            android:gravity="center" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Match event card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="#F5F5F5"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp">
+                    <TextView
+                        android:id="@+id/tv_match_event"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="⚽ 32' — GOAL! Müller scored (GER)"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ══════════════ DELIVERY TRACKING ══════════════ -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="3dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Card header -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="📦  Delivery Tracking"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="#F44336"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="0dp">
+                        <TextView
+                            android:id="@+id/tv_live_delivery"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="3dp"
+                            android:text="● LIVE"
+                            android:textColor="@android:color/white"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
+                <!-- Package ID + ETA row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="14dp">
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="ORDER #TRK789456"
+                            android:textColor="#999999"
+                            android:textSize="11sp" />
+                        <TextView
+                            android:id="@+id/tv_delivery_current"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Out for Delivery"
+                            android:textStyle="bold"
+                            android:textSize="15sp"
+                            android:textColor="#00897B" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Arrives in"
+                            android:textColor="#999999"
+                            android:textSize="11sp" />
+                        <TextView
+                            android:id="@+id/tv_delivery_eta"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="18:00"
+                            android:textColor="#00897B"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Step rows (5 steps) -->
+                <LinearLayout android:id="@+id/row_step_0"
+                    android:layout_width="match_parent" android:layout_height="36dp"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:id="@+id/tv_del_dot_0"
+                        android:layout_width="24dp" android:layout_height="24dp"
+                        android:text="✓" android:gravity="center"
+                        android:textSize="14sp" android:textColor="#FFFFFF"
+                        android:background="#4CAF50" />
+                    <TextView android:id="@+id/tv_del_step_0"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Order Confirmed" android:textSize="13sp"
+                        android:layout_marginStart="10dp" android:textColor="#4CAF50" />
+                </LinearLayout>
+                <LinearLayout android:id="@+id/row_step_1"
+                    android:layout_width="match_parent" android:layout_height="36dp"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:id="@+id/tv_del_dot_1"
+                        android:layout_width="24dp" android:layout_height="24dp"
+                        android:text="✓" android:gravity="center"
+                        android:textSize="14sp" android:textColor="#FFFFFF"
+                        android:background="#4CAF50" />
+                    <TextView android:id="@+id/tv_del_step_1"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Picked Up from Seller" android:textSize="13sp"
+                        android:layout_marginStart="10dp" android:textColor="#4CAF50" />
+                </LinearLayout>
+                <LinearLayout android:id="@+id/row_step_2"
+                    android:layout_width="match_parent" android:layout_height="36dp"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:id="@+id/tv_del_dot_2"
+                        android:layout_width="24dp" android:layout_height="24dp"
+                        android:text="✓" android:gravity="center"
+                        android:textSize="14sp" android:textColor="#FFFFFF"
+                        android:background="#4CAF50" />
+                    <TextView android:id="@+id/tv_del_step_2"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="At Sorting Facility" android:textSize="13sp"
+                        android:layout_marginStart="10dp" android:textColor="#4CAF50" />
+                </LinearLayout>
+                <LinearLayout android:id="@+id/row_step_3"
+                    android:layout_width="match_parent" android:layout_height="36dp"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:id="@+id/tv_del_dot_3"
+                        android:layout_width="24dp" android:layout_height="24dp"
+                        android:text="→" android:gravity="center"
+                        android:textSize="14sp" android:textColor="#FFFFFF"
+                        android:background="#6750A4" />
+                    <TextView android:id="@+id/tv_del_step_3"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Out for Delivery" android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginStart="10dp" android:textColor="#6750A4" />
+                </LinearLayout>
+                <LinearLayout android:id="@+id/row_step_4"
+                    android:layout_width="match_parent" android:layout_height="36dp"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:id="@+id/tv_del_dot_4"
+                        android:layout_width="24dp" android:layout_height="24dp"
+                        android:text="○" android:gravity="center"
+                        android:textSize="14sp" android:textColor="#BBBBBB"
+                        android:background="#EEEEEE" />
+                    <TextView android:id="@+id/tv_del_step_4"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Delivered" android:textSize="13sp"
+                        android:layout_marginStart="10dp" android:textColor="#BBBBBB" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

@@ -129,5 +129,15 @@ class MainActivity : AppCompatActivity() {
         findViewById<MaterialButton>(R.id.open_video_player_button).setOnClickListener {
             startActivity(Intent(this, VideoPlayerActivity::class.java))
         }
+
+        // --- Navigation to Live Activity ---
+        findViewById<MaterialButton>(R.id.open_live_activity_button).setOnClickListener {
+            startActivity(Intent(this, LiveActivityActivity::class.java))
+        }
+
+        // --- Navigation to Chat ---
+        findViewById<MaterialButton>(R.id.open_chat_button).setOnClickListener {
+            startActivity(Intent(this, ChatActivity::class.java))
+        }
     }
 }
