@@ -57,10 +57,108 @@ class _FlutterHomePageState extends State<FlutterHomePage> {
     FlutterUxcam.tagScreenName('FlutterHome');
   }
 
+  void _navigate(Widget page) {
+    Navigator.pop(context);
+    Navigator.push(context, MaterialPageRoute(builder: (_) => page));
+  }
+
+  Widget _buildDrawer() {
+    return Drawer(
+      child: Column(
+        children: [
+          // Header
+          UserAccountsDrawerHeader(
+            decoration: const BoxDecoration(color: Color(0xFF4527A0)),
+            accountName: const Text('Alex Johnson', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+            accountEmail: OccludeWrapper(child: const Text('alex@shopnow.com', style: TextStyle(fontSize: 13))),
+            currentAccountPicture: CircleAvatar(
+              backgroundColor: Colors.white,
+              child: Text('A', style: const TextStyle(color: Color(0xFF4527A0), fontWeight: FontWeight.bold, fontSize: 22)),
+            ),
+          ),
+
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                // ── Main
+                _navTile('🏠  Home', Icons.home, null, isHome: true),
+                _navTile('🦋  Flutter View', Icons.flutter_dash, null),
+                const Divider(),
+
+                // ── UI Views
+                _sectionLabel('UI Views'),
+                _navTile('🌐  WebView', Icons.language, const FlutterWebViewPage()),
+                _navTile('✨  Animations', Icons.auto_awesome, const FlutterLottiePage()),
+                _navTile('💬  Dialogs & Alerts', Icons.chat_bubble_outline, const FlutterDialogsPage()),
+                _navTile('🖼️  Image Gallery', Icons.photo_library_outlined, const FlutterImageGalleryPage()),
+                _navTile('📜  Scroll Demo', Icons.view_list_outlined, const FlutterScrollDemoPage()),
+                _navTile('🔽  Dropdown Demo', Icons.arrow_drop_down_circle_outlined, const FlutterDropdownDemoPage()),
+                _navTile('▶️  Video Player', Icons.play_circle_outline, const FlutterVideoPlayerPage()),
+                const Divider(),
+
+                // ── Features
+                _sectionLabel('Features'),
+                _navTile('🗺️  Map View', Icons.map_outlined, const FlutterMapDemoPage()),
+                _navTile('🎠  Carousel / Slider', Icons.view_carousel_outlined, const FlutterCarouselPage()),
+                _navTile('📡  Live Activity', Icons.live_tv_outlined, const FlutterLiveActivityPage()),
+                _navTile('💬  Chat View', Icons.message_outlined, const FlutterChatPage()),
+                _navTile('🛍️  E-commerce', Icons.storefront_outlined, const FlutterEcomLoginPage()),
+                const Divider(),
+
+                // ── UXCam
+                _sectionLabel('UXCam'),
+                _navTile('⏸️  Short Break', Icons.pause_circle_outline, const FlutterShortBreakPage()),
+                _navTile('🎯  FAB Demo', Icons.add_circle_outline, const FlutterFABDemoPage()),
+              ],
+            ),
+          ),
+
+          // Footer
+          const Divider(height: 1),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            child: Row(children: const [
+              Icon(Icons.shield_outlined, size: 16, color: Color(0xFF9E9E9E)),
+              SizedBox(width: 8),
+              Text('Powered by UXCam', style: TextStyle(fontSize: 12, color: Color(0xFF9E9E9E))),
+            ]),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _sectionLabel(String title) => Padding(
+    padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+    child: Text(title, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF9E9E9E), letterSpacing: 0.8)),
+  );
+
+  Widget _navTile(String title, IconData icon, Widget? page, {bool isHome = false}) {
+    return ListTile(
+      leading: Icon(icon, color: const Color(0xFF6750A4), size: 22),
+      title: Text(title, style: const TextStyle(fontSize: 14)),
+      selected: isHome,
+      selectedColor: const Color(0xFF6750A4),
+      selectedTileColor: const Color(0xFFF3EEFF),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+      onTap: () {
+        FlutterUxcam.logEventWithProperties('nav_item_selected', {'item': title.trim()});
+        if (isHome || page == null) {
+          Navigator.pop(context);
+        } else {
+          _navigate(page);
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Flutter Screen')),
+      drawer: _buildDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -334,6 +432,17 @@ class _FlutterHomePageState extends State<FlutterHomePage> {
                 );
               },
               child: const Text('Chat View'),
+            ),
+            const SizedBox(height: 8),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFE65100), foregroundColor: Colors.white),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const FlutterEcomLoginPage()),
+                );
+              },
+              child: const Text('E-commerce Demo'),
             ),
             const SizedBox(height: 24),
 
@@ -4297,4 +4406,701 @@ class _FlutterChatPageState extends State<FlutterChatPage>
     final now = DateTime.now();
     return '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
   }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// E-COMMERCE VIEWS
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ── Shared product model ──────────────────────────────────────────────────────
+class _EcomProduct {
+  final int id;
+  final String name, category, price, originalPrice, discount, rating, emoji, description;
+  final Color color;
+  final List<String> sizes;
+
+  const _EcomProduct({
+    required this.id, required this.name, required this.category,
+    required this.price, required this.originalPrice, required this.discount,
+    required this.rating, required this.emoji, required this.description,
+    required this.color, this.sizes = const [],
+  });
+}
+
+const _kEcomProducts = [
+  _EcomProduct(id: 1, name: 'Nike Air Max 270', category: 'Footwear', price: '\$129.99', originalPrice: '\$159.99', discount: '-19%', rating: '4.8', emoji: '👟', color: Color(0xFFFFF3E0), description: 'Lightweight, breathable running shoes with Air Max cushioning for all-day comfort on any terrain.', sizes: ['6','7','8','9','10','11','12']),
+  _EcomProduct(id: 2, name: 'MacBook Pro 14"', category: 'Electronics', price: '\$1,299.99', originalPrice: '\$1,499.99', discount: '-13%', rating: '4.9', emoji: '💻', color: Color(0xFFE3F2FD), description: 'Apple M3 chip, 16 GB RAM, 512 GB SSD. The ultimate professional laptop for creators.'),
+  _EcomProduct(id: 3, name: 'Sony WH-1000XM5', category: 'Electronics', price: '\$279.99', originalPrice: '\$349.99', discount: '-20%', rating: '4.7', emoji: '🎧', color: Color(0xFFE8EAF6), description: 'Industry-leading noise cancellation with crystal-clear sound and 30-hour battery life.'),
+  _EcomProduct(id: 4, name: 'Apple Watch S9', category: 'Wearables', price: '\$249.99', originalPrice: '\$299.99', discount: '-17%', rating: '4.7', emoji: '⌚', color: Color(0xFFF3E5F5), description: 'Advanced health monitoring, crash detection, and an always-on Retina display.', sizes: ['S','M','L','XL']),
+  _EcomProduct(id: 5, name: 'Adidas Ultraboost 23', category: 'Footwear', price: '\$89.99', originalPrice: '\$119.99', discount: '-25%', rating: '4.5', emoji: '🏃', color: Color(0xFFFFF8E1), description: 'Responsive Boost midsole with a sock-like Primeknit upper for the ultimate running experience.', sizes: ['6','7','8','9','10','11','12']),
+  _EcomProduct(id: 6, name: 'AirPods Pro 3rd Gen', category: 'Electronics', price: '\$189.99', originalPrice: '\$249.99', discount: '-24%', rating: '4.8', emoji: '🎵', color: Color(0xFFE0F2F1), description: 'Active Noise Cancellation and Transparency mode with Adaptive Audio and spatial sound.'),
+  _EcomProduct(id: 7, name: 'Leather Tote Bag', category: 'Accessories', price: '\$79.99', originalPrice: '\$99.99', discount: '-20%', rating: '4.3', emoji: '👜', color: Color(0xFFFCE4EC), description: 'Handcrafted genuine leather tote with spacious interior and dedicated laptop sleeve.', sizes: ['One Size']),
+  _EcomProduct(id: 8, name: 'Smart Coffee Maker', category: 'Home', price: '\$149.99', originalPrice: '\$199.99', discount: '-25%', rating: '4.6', emoji: '☕', color: Color(0xFFFFECB3), description: 'Wi-Fi enabled coffee maker with scheduling, temperature control, and auto-clean mode.'),
+  _EcomProduct(id: 9, name: 'Premium Yoga Mat', category: 'Sports', price: '\$34.99', originalPrice: '\$49.99', discount: '-30%', rating: '4.5', emoji: '🧘', color: Color(0xFFE8F5E9), description: 'Non-slip, eco-friendly cork yoga mat with alignment lines and carry strap.', sizes: ['S','M','L','One Size']),
+  _EcomProduct(id: 10, name: 'Ray-Ban Aviators', category: 'Accessories', price: '\$169.99', originalPrice: '\$199.99', discount: '-15%', rating: '4.6', emoji: '😎', color: Color(0xFFE3F2FD), description: 'Classic gold-frame aviators with G-15 polarized lenses for 100% UV protection.', sizes: ['One Size']),
+  _EcomProduct(id: 11, name: 'Hiking Backpack 40L', category: 'Sports', price: '\$89.99', originalPrice: '\$119.99', discount: '-25%', rating: '4.5', emoji: '🎒', color: Color(0xFFE8EAF6), description: 'Water-resistant 40L hiking pack with ergonomic frame and hydration reservoir pocket.', sizes: ['S','M','L','XL']),
+  _EcomProduct(id: 12, name: 'Fujifilm Instax Mini', category: 'Electronics', price: '\$89.99', originalPrice: '\$109.99', discount: '-18%', rating: '4.4', emoji: '📷', color: Color(0xFFF1F8E9), description: 'Instant film camera with automatic exposure, built-in flash, and selfie mirror.'),
+];
+
+// ── Login ─────────────────────────────────────────────────────────────────────
+class FlutterEcomLoginPage extends StatefulWidget {
+  const FlutterEcomLoginPage({super.key});
+  @override State<FlutterEcomLoginPage> createState() => _FlutterEcomLoginPageState();
+}
+
+class _FlutterEcomLoginPageState extends State<FlutterEcomLoginPage> {
+  final _emailCtrl = TextEditingController(text: 'demo@shopnow.com');
+  final _passCtrl = TextEditingController(text: 'demo1234');
+  bool _obscure = true;
+
+  @override
+  void initState() {
+    super.initState();
+    FlutterUxcam.tagScreenName('FlutterEcomLogin');
+  }
+
+  @override
+  void dispose() { _emailCtrl.dispose(); _passCtrl.dispose(); super.dispose(); }
+
+  void _login(String source) {
+    FlutterUxcam.logEventWithProperties('ecom_login', {'source': source});
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const FlutterEcomFeedPage()));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFFAFAFA),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(28),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            const SizedBox(height: 40),
+            const Center(child: Text('🛍️', style: TextStyle(fontSize: 64))),
+            const SizedBox(height: 8),
+            const Center(child: Text('ShopNow', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFFE65100)))),
+            const SizedBox(height: 4),
+            const Center(child: Text('Welcome back!', style: TextStyle(fontSize: 14, color: Color(0xFF757575)))),
+            const SizedBox(height: 40),
+
+            OccludeWrapper(child: TextField(
+              controller: _emailCtrl,
+              keyboardType: TextInputType.emailAddress,
+              decoration: const InputDecoration(labelText: 'Email address', border: OutlineInputBorder()),
+            )),
+            const SizedBox(height: 16),
+            OccludeWrapper(child: TextField(
+              controller: _passCtrl,
+              obscureText: _obscure,
+              decoration: InputDecoration(
+                labelText: 'Password',
+                border: const OutlineInputBorder(),
+                suffixIcon: IconButton(icon: Icon(_obscure ? Icons.visibility_off : Icons.visibility), onPressed: () => setState(() => _obscure = !_obscure)),
+              ),
+            )),
+            const SizedBox(height: 8),
+            Align(alignment: Alignment.centerRight, child: TextButton(onPressed: () { FlutterUxcam.logEvent('ecom_forgot_password'); }, child: const Text('Forgot Password?', style: TextStyle(color: Color(0xFFE65100))))),
+            const SizedBox(height: 16),
+
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFE65100), foregroundColor: Colors.white, minimumSize: const Size.fromHeight(48)),
+              onPressed: () => _login('email'),
+              child: const Text('Log In', style: TextStyle(fontSize: 15)),
+            ),
+            const SizedBox(height: 16),
+
+            Row(children: const [Expanded(child: Divider()), Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Text('or', style: TextStyle(color: Color(0xFF9E9E9E)))), Expanded(child: Divider())]),
+            const SizedBox(height: 16),
+
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+              onPressed: () => _login('google'),
+              child: const Text('Continue with Google'),
+            ),
+            const SizedBox(height: 32),
+
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              const Text("Don't have an account? ", style: TextStyle(color: Color(0xFF757575))),
+              GestureDetector(
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FlutterEcomSignupPage())),
+                child: const Text('Sign Up', style: TextStyle(color: Color(0xFFE65100), fontWeight: FontWeight.bold)),
+              ),
+            ]),
+          ]),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Signup ────────────────────────────────────────────────────────────────────
+class FlutterEcomSignupPage extends StatefulWidget {
+  const FlutterEcomSignupPage({super.key});
+  @override State<FlutterEcomSignupPage> createState() => _FlutterEcomSignupPageState();
+}
+
+class _FlutterEcomSignupPageState extends State<FlutterEcomSignupPage> {
+  final _nameCtrl = TextEditingController();
+  final _emailCtrl = TextEditingController();
+  final _passCtrl = TextEditingController();
+  final _confirmCtrl = TextEditingController();
+  bool _obscurePass = true, _obscureConfirm = true;
+  String? _error;
+
+  @override void initState() { super.initState(); FlutterUxcam.tagScreenName('FlutterEcomSignup'); }
+  @override void dispose() { _nameCtrl.dispose(); _emailCtrl.dispose(); _passCtrl.dispose(); _confirmCtrl.dispose(); super.dispose(); }
+
+  void _signup() {
+    if (_nameCtrl.text.trim().isEmpty) { setState(() => _error = 'Name required'); return; }
+    if (_emailCtrl.text.trim().isEmpty) { setState(() => _error = 'Email required'); return; }
+    if (_passCtrl.text.length < 6) { setState(() => _error = 'Password must be at least 6 characters'); return; }
+    if (_passCtrl.text != _confirmCtrl.text) { setState(() => _error = 'Passwords do not match'); return; }
+    setState(() => _error = null);
+    FlutterUxcam.logEventWithProperties('ecom_signup', {'source': 'email'});
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const FlutterEcomFeedPage()));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFFAFAFA),
+      appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0, foregroundColor: Colors.black),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(28),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          const Center(child: Text('🛍️', style: TextStyle(fontSize: 48))),
+          const SizedBox(height: 8),
+          const Center(child: Text('Create Account', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))),
+          const SizedBox(height: 4),
+          const Center(child: Text('Join millions of happy shoppers', style: TextStyle(fontSize: 13, color: Color(0xFF757575)))),
+          const SizedBox(height: 28),
+
+          TextField(controller: _nameCtrl, textCapitalization: TextCapitalization.words, decoration: const InputDecoration(labelText: 'Full Name', border: OutlineInputBorder())),
+          const SizedBox(height: 16),
+          OccludeWrapper(child: TextField(controller: _emailCtrl, keyboardType: TextInputType.emailAddress, decoration: const InputDecoration(labelText: 'Email address', border: OutlineInputBorder()))),
+          const SizedBox(height: 16),
+          OccludeWrapper(child: TextField(controller: _passCtrl, obscureText: _obscurePass, decoration: InputDecoration(labelText: 'Password', border: const OutlineInputBorder(), suffixIcon: IconButton(icon: Icon(_obscurePass ? Icons.visibility_off : Icons.visibility), onPressed: () => setState(() => _obscurePass = !_obscurePass))))),
+          const SizedBox(height: 16),
+          OccludeWrapper(child: TextField(controller: _confirmCtrl, obscureText: _obscureConfirm, decoration: InputDecoration(labelText: 'Confirm Password', border: const OutlineInputBorder(), suffixIcon: IconButton(icon: Icon(_obscureConfirm ? Icons.visibility_off : Icons.visibility), onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm))))),
+          const SizedBox(height: 8),
+
+          if (_error != null) Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(_error!, style: const TextStyle(color: Colors.red, fontSize: 12))),
+
+          const Text('By signing up, you agree to our Terms of Service and Privacy Policy.', style: TextStyle(fontSize: 12, color: Color(0xFF9E9E9E))),
+          const SizedBox(height: 20),
+
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFE65100), foregroundColor: Colors.white, minimumSize: const Size.fromHeight(48)),
+            onPressed: _signup,
+            child: const Text('Create Account', style: TextStyle(fontSize: 15)),
+          ),
+          const SizedBox(height: 24),
+
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            const Text("Already have an account? ", style: TextStyle(color: Color(0xFF757575))),
+            GestureDetector(onTap: () => Navigator.pop(context), child: const Text('Log In', style: TextStyle(color: Color(0xFFE65100), fontWeight: FontWeight.bold))),
+          ]),
+        ]),
+      ),
+    );
+  }
+}
+
+// ── Feed ──────────────────────────────────────────────────────────────────────
+class FlutterEcomFeedPage extends StatefulWidget {
+  const FlutterEcomFeedPage({super.key});
+  @override State<FlutterEcomFeedPage> createState() => _FlutterEcomFeedPageState();
+}
+
+class _FlutterEcomFeedPageState extends State<FlutterEcomFeedPage> {
+  final _categories = ['All', 'Footwear', 'Electronics', 'Wearables', 'Accessories', 'Home', 'Sports'];
+  String _selected = 'All';
+
+  @override void initState() { super.initState(); FlutterUxcam.tagScreenName('FlutterEcomFeed'); }
+
+  List<_EcomProduct> get _filtered => _selected == 'All' ? _kEcomProducts : _kEcomProducts.where((p) => p.category == _selected).toList();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F5F5),
+      body: Column(children: [
+        // Orange header
+        Container(
+          color: const Color(0xFFE65100),
+          child: SafeArea(
+            bottom: false,
+            child: Column(children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Row(children: [
+                  const Text('🛍️ ShopNow', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  const Spacer(),
+                  IconButton(icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white), onPressed: () {}),
+                ]),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                child: Container(
+                  height: 42, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(21)),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(children: const [Icon(Icons.search, size: 18, color: Color(0xFF9E9E9E)), SizedBox(width: 8), Text('Search products, brands…', style: TextStyle(color: Color(0xFF9E9E9E), fontSize: 14))]),
+                ),
+              ),
+            ]),
+          ),
+        ),
+        // Category chips
+        Container(
+          color: Colors.white,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Row(
+              children: _categories.map((cat) {
+                final sel = cat == _selected;
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: ChoiceChip(
+                    label: Text(cat),
+                    selected: sel,
+                    selectedColor: const Color(0xFFE65100),
+                    labelStyle: TextStyle(color: sel ? Colors.white : Colors.black87, fontSize: 13),
+                    onSelected: (_) => setState(() {
+                      _selected = cat;
+                      FlutterUxcam.logEventWithProperties('ecom_category_selected', {'category': cat});
+                    }),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+        // Product grid
+        Expanded(
+          child: GridView.builder(
+            padding: const EdgeInsets.all(8),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 0.7, crossAxisSpacing: 8, mainAxisSpacing: 8),
+            itemCount: _filtered.length,
+            itemBuilder: (ctx, i) {
+              final p = _filtered[i];
+              return _ProductCard(product: p, onTap: () {
+                FlutterUxcam.logEventWithProperties('ecom_product_viewed', {'name': p.name, 'price': p.price});
+                Navigator.push(context, MaterialPageRoute(builder: (_) => FlutterEcomProductDetailPage(product: p)));
+              });
+            },
+          ),
+        ),
+      ]),
+    );
+  }
+}
+
+class _ProductCard extends StatelessWidget {
+  final _EcomProduct product;
+  final VoidCallback onTap;
+  const _ProductCard({required this.product, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Stack(children: [
+            Container(
+              height: 120, width: double.infinity,
+              decoration: BoxDecoration(color: product.color, borderRadius: const BorderRadius.vertical(top: Radius.circular(12))),
+              child: Center(child: Text(product.emoji, style: const TextStyle(fontSize: 44))),
+            ),
+            Positioned(
+              top: 8, right: 8,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(color: const Color(0xFFE65100), borderRadius: BorderRadius.circular(10)),
+                child: Text(product.discount, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+              ),
+            ),
+          ]),
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(product.name, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF212121)), maxLines: 2, overflow: TextOverflow.ellipsis),
+              const SizedBox(height: 2),
+              Text(product.category, style: const TextStyle(fontSize: 11, color: Color(0xFF9E9E9E))),
+              const SizedBox(height: 6),
+              Row(children: [
+                Expanded(child: Text(product.price, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFFE65100)))),
+                Text('⭐ ${product.rating}', style: const TextStyle(fontSize: 11, color: Color(0xFF757575))),
+              ]),
+              Text(product.originalPrice, style: const TextStyle(fontSize: 11, color: Color(0xFFBDBDBD), decoration: TextDecoration.lineThrough)),
+            ]),
+          ),
+        ]),
+      ),
+    );
+  }
+}
+
+// ── Product Detail ────────────────────────────────────────────────────────────
+class FlutterEcomProductDetailPage extends StatefulWidget {
+  final _EcomProduct product;
+  const FlutterEcomProductDetailPage({super.key, required this.product});
+  @override State<FlutterEcomProductDetailPage> createState() => _FlutterEcomProductDetailPageState();
+}
+
+class _FlutterEcomProductDetailPageState extends State<FlutterEcomProductDetailPage> {
+  int _qty = 1;
+  bool _wishlisted = false;
+  String? _selectedSize;
+
+  @override
+  void initState() {
+    super.initState();
+    FlutterUxcam.tagScreenName('FlutterEcomProductDetail');
+    FlutterUxcam.logEventWithProperties('ecom_product_viewed', {'name': widget.product.name});
+    if (widget.product.sizes.isNotEmpty) _selectedSize = widget.product.sizes[1 < widget.product.sizes.length ? 1 : 0];
+  }
+
+  double get _price => double.tryParse(widget.product.price.replaceAll('\$', '').replaceAll(',', '')) ?? 0;
+  double get _orig => double.tryParse(widget.product.originalPrice.replaceAll('\$', '').replaceAll(',', '')) ?? 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = widget.product;
+    return Scaffold(
+      body: Column(children: [
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              // Hero header
+              Stack(children: [
+                Container(
+                  height: 240, width: double.infinity, color: p.color,
+                  child: Center(child: Text(p.emoji, style: const TextStyle(fontSize: 90))),
+                ),
+                SafeArea(child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  IconButton(icon: const Icon(Icons.arrow_back), color: Colors.white, style: IconButton.styleFrom(backgroundColor: Colors.black26), onPressed: () => Navigator.pop(context)),
+                  IconButton(
+                    icon: Icon(_wishlisted ? Icons.favorite : Icons.favorite_border),
+                    color: _wishlisted ? Colors.red : Colors.white,
+                    style: IconButton.styleFrom(backgroundColor: Colors.white),
+                    onPressed: () {
+                      setState(() => _wishlisted = !_wishlisted);
+                      FlutterUxcam.logEventWithProperties('ecom_wishlist_toggled', {'product': p.name, 'wishlisted': _wishlisted.toString()});
+                    },
+                  ),
+                ])),
+              ]),
+
+              // Info card
+              _card(Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), decoration: BoxDecoration(color: const Color(0xFFFFF3E0), borderRadius: BorderRadius.circular(8)),
+                  child: Text(p.category, style: const TextStyle(fontSize: 11, color: Color(0xFFE65100)))),
+                const SizedBox(height: 8),
+                Text(p.name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF212121))),
+                const SizedBox(height: 8),
+                Row(children: [
+                  Text('⭐ ${p.rating}', style: const TextStyle(fontSize: 14, color: Color(0xFFFFA000))),
+                  const SizedBox(width: 8),
+                  const Text('· Verified Purchase', style: TextStyle(fontSize: 12, color: Color(0xFF9E9E9E))),
+                  const Spacer(),
+                  const Text('✓ In Stock', style: TextStyle(fontSize: 12, color: Color(0xFF2E7D32))),
+                ]),
+                const SizedBox(height: 12),
+                Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+                  Text(p.price, style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Color(0xFFE65100))),
+                  const SizedBox(width: 8),
+                  Text(p.originalPrice, style: const TextStyle(fontSize: 14, color: Color(0xFFBDBDBD), decoration: TextDecoration.lineThrough)),
+                ]),
+                if (_orig > _price)
+                  Text('You save \$${(_orig - _price).toStringAsFixed(2)} (${(((_orig - _price) / _orig) * 100).round()}% off)',
+                    style: const TextStyle(fontSize: 12, color: Color(0xFF2E7D32))),
+              ])),
+
+              // Sizes
+              if (p.sizes.isNotEmpty) _card(Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Text('Select Size', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF212121))),
+                const SizedBox(height: 10),
+                Wrap(spacing: 8, runSpacing: 8, children: p.sizes.map((s) {
+                  final sel = s == _selectedSize;
+                  return GestureDetector(
+                    onTap: () => setState(() => _selectedSize = s),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: sel ? const Color(0xFFE65100) : Colors.white,
+                        border: Border.all(color: sel ? const Color(0xFFE65100) : const Color(0xFFE0E0E0)),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(s, style: TextStyle(fontSize: 13, color: sel ? Colors.white : const Color(0xFF212121), fontWeight: sel ? FontWeight.bold : FontWeight.normal)),
+                    ),
+                  );
+                }).toList()),
+              ])),
+
+              // Quantity
+              _card(Row(children: [
+                const Text('Quantity', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF212121))),
+                const Spacer(),
+                OutlinedButton(onPressed: () { if (_qty > 1) setState(() => _qty--); }, child: const Text('−', style: TextStyle(fontSize: 18))),
+                SizedBox(width: 48, child: Text('$_qty', textAlign: TextAlign.center, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
+                OutlinedButton(onPressed: () { if (_qty < 10) setState(() => _qty++); }, child: const Text('+', style: TextStyle(fontSize: 18))),
+              ])),
+
+              // Description
+              _card(Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Text('Description', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF212121))),
+                const SizedBox(height: 8),
+                Text(p.description, style: const TextStyle(fontSize: 13, color: Color(0xFF616161), height: 1.5)),
+              ])),
+
+              // Delivery info
+              _card(Column(children: [
+                Row(children: const [Text('🚚  ', style: TextStyle(fontSize: 16)), Text('Free delivery', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)), Spacer(), Text('2–4 days', style: TextStyle(fontSize: 13, color: Color(0xFF9E9E9E)))]),
+                const SizedBox(height: 8),
+                Row(children: const [Text('↩️  ', style: TextStyle(fontSize: 16)), Text('30-day returns', style: TextStyle(fontSize: 13))]),
+              ])),
+
+              const SizedBox(height: 16),
+            ]),
+          ),
+        ),
+
+        // Sticky action bar
+        Container(
+          color: Colors.white,
+          padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
+          child: Row(children: [
+            Expanded(
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(minimumSize: const Size(0, 48), side: const BorderSide(color: Color(0xFFE65100)), foregroundColor: const Color(0xFFE65100)),
+                onPressed: () {
+                  FlutterUxcam.logEventWithProperties('ecom_add_to_cart', {'name': p.name, 'price': p.price, 'qty': _qty.toString()});
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Added to cart ✓'), backgroundColor: Color(0xFFE65100), duration: Duration(seconds: 2)));
+                },
+                child: const Text('Add to Cart'),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFE65100), foregroundColor: Colors.white, minimumSize: const Size(0, 48)),
+                onPressed: () {
+                  FlutterUxcam.logEventWithProperties('ecom_buy_now', {'name': p.name, 'price': p.price, 'qty': _qty.toString()});
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => FlutterEcomCheckoutPage(product: p, quantity: _qty, selectedSize: _selectedSize)));
+                },
+                child: const Text('Buy Now'),
+              ),
+            ),
+          ]),
+        ),
+      ]),
+    );
+  }
+
+  Widget _card(Widget child) => Container(
+    margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), boxShadow: const [BoxShadow(color: Color(0x14000000), blurRadius: 4, offset: Offset(0, 2))]),
+    child: child,
+  );
+}
+
+// ── Checkout ──────────────────────────────────────────────────────────────────
+class FlutterEcomCheckoutPage extends StatefulWidget {
+  final _EcomProduct product;
+  final int quantity;
+  final String? selectedSize;
+  const FlutterEcomCheckoutPage({super.key, required this.product, required this.quantity, this.selectedSize});
+  @override State<FlutterEcomCheckoutPage> createState() => _FlutterEcomCheckoutPageState();
+}
+
+class _FlutterEcomCheckoutPageState extends State<FlutterEcomCheckoutPage> {
+  final _nameCtrl = TextEditingController(text: 'Alex Johnson');
+  final _addrCtrl = TextEditingController(text: '123 Market Street');
+  final _cityCtrl = TextEditingController(text: 'San Francisco');
+  final _zipCtrl = TextEditingController(text: '94102');
+  final _cardNameCtrl = TextEditingController(text: 'Alex Johnson');
+  final _cardNumCtrl = TextEditingController(text: '4242424242424242');
+  final _expiryCtrl = TextEditingController(text: '12/28');
+  final _cvvCtrl = TextEditingController(text: '123');
+  String _paymentMethod = 'saved_card';
+
+  @override
+  void initState() {
+    super.initState();
+    FlutterUxcam.tagScreenName('FlutterEcomCheckout');
+  }
+
+  @override
+  void dispose() {
+    for (final c in [_nameCtrl, _addrCtrl, _cityCtrl, _zipCtrl, _cardNameCtrl, _cardNumCtrl, _expiryCtrl, _cvvCtrl]) c.dispose();
+    super.dispose();
+  }
+
+  double get _price => double.tryParse(widget.product.price.replaceAll('\$', '').replaceAll(',', '')) ?? 0;
+  double get _subtotal => _price * widget.quantity;
+  double get _tax => _subtotal * 0.085;
+  double get _total => _subtotal + _tax;
+
+  void _placeOrder() {
+    FlutterUxcam.logEventWithProperties('ecom_order_placed', {
+      'product': widget.product.name,
+      'total': _total.toStringAsFixed(2),
+      'payment': _paymentMethod,
+      'qty': widget.quantity.toString(),
+    });
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => AlertDialog(
+        title: const Text('Order Placed! 🎉'),
+        content: Text(
+          'Your order has been confirmed.\n\n'
+          'Order #SN${100000 + (DateTime.now().millisecond * 9)}\n'
+          'Total: \$${_total.toStringAsFixed(2)}\n'
+          'Payment: ${_paymentMethod.replaceAll('_', ' ')}\n\n'
+          'Expected delivery: 2–4 business days.',
+        ),
+        actions: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFE65100), foregroundColor: Colors.white),
+            onPressed: () { Navigator.of(context).popUntil((r) => r.isFirst); },
+            child: const Text('Continue Shopping'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final p = widget.product;
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F5F5),
+      appBar: AppBar(title: const Text('Checkout', style: TextStyle(color: Colors.white)), backgroundColor: const Color(0xFFE65100), iconTheme: const IconThemeData(color: Colors.white)),
+      body: Column(children: [
+        // Step indicator
+        Container(
+          color: Colors.white,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          child: Row(children: [
+            const Text('Cart', style: TextStyle(fontSize: 12, color: Color(0xFF9E9E9E))),
+            Expanded(child: Container(height: 1, margin: const EdgeInsets.symmetric(horizontal: 8), color: const Color(0xFFE0E0E0))),
+            const Text('Checkout', style: TextStyle(fontSize: 12, color: Color(0xFFE65100), fontWeight: FontWeight.bold)),
+            Expanded(child: Container(height: 1, margin: const EdgeInsets.symmetric(horizontal: 8), color: const Color(0xFFE0E0E0))),
+            const Text('Confirm', style: TextStyle(fontSize: 12, color: Color(0xFF9E9E9E))),
+          ]),
+        ),
+
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(children: [
+              // Order summary
+              _section('Order Summary', Column(children: [
+                Row(children: [
+                  Container(width: 56, height: 56, color: p.color, child: Center(child: Text(p.emoji, style: const TextStyle(fontSize: 24)))),
+                  const SizedBox(width: 12),
+                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(p.name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                    Text('${widget.selectedSize != null ? "Size: ${widget.selectedSize}  · " : ""}Qty: ${widget.quantity}', style: const TextStyle(fontSize: 12, color: Color(0xFF9E9E9E))),
+                  ])),
+                  Text(p.price, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFFE65100))),
+                ]),
+              ])),
+
+              // Shipping
+              _section('Shipping Address', Column(children: [
+                OccludeWrapper(child: TextField(controller: _nameCtrl, decoration: const InputDecoration(labelText: 'Full Name', border: OutlineInputBorder(), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10)))),
+                const SizedBox(height: 12),
+                OccludeWrapper(child: TextField(controller: _addrCtrl, decoration: const InputDecoration(labelText: 'Street Address', border: OutlineInputBorder(), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10)))),
+                const SizedBox(height: 12),
+                Row(children: [
+                  Expanded(child: OccludeWrapper(child: TextField(controller: _cityCtrl, decoration: const InputDecoration(labelText: 'City', border: OutlineInputBorder(), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10))))),
+                  const SizedBox(width: 12),
+                  Expanded(child: OccludeWrapper(child: TextField(controller: _zipCtrl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'ZIP Code', border: OutlineInputBorder(), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10))))),
+                ]),
+              ])),
+
+              // Payment
+              _section('Payment Method', Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                _paymentTile('saved_card', '💳  Saved Card  ···· 4242'),
+                _paymentTile('paypal', '🔵  PayPal'),
+                _paymentTile('cod', '💵  Cash on Delivery'),
+                if (_paymentMethod == 'saved_card') ...[
+                  const SizedBox(height: 12),
+                  OccludeWrapper(child: TextField(controller: _cardNameCtrl, decoration: const InputDecoration(labelText: 'Cardholder Name', border: OutlineInputBorder(), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10)))),
+                  const SizedBox(height: 12),
+                  OccludeWrapper(child: TextField(controller: _cardNumCtrl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'Card Number', border: OutlineInputBorder(), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10)))),
+                  const SizedBox(height: 12),
+                  Row(children: [
+                    Expanded(child: OccludeWrapper(child: TextField(controller: _expiryCtrl, decoration: const InputDecoration(labelText: 'MM/YY', border: OutlineInputBorder(), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10))))),
+                    const SizedBox(width: 12),
+                    Expanded(child: OccludeWrapper(child: TextField(controller: _cvvCtrl, keyboardType: TextInputType.number, obscureText: true, decoration: const InputDecoration(labelText: 'CVV', border: OutlineInputBorder(), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10))))),
+                  ]),
+                ],
+              ])),
+
+              // Price summary
+              _section('Price Details', Column(children: [
+                _priceRow('Subtotal', '\$${_subtotal.toStringAsFixed(2)}'),
+                _priceRow('Shipping', 'FREE', valueColor: const Color(0xFF2E7D32)),
+                _priceRow('Tax (8.5%)', '\$${_tax.toStringAsFixed(2)}'),
+                const Divider(height: 20),
+                Row(children: [
+                  const Text('Total', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                  const Spacer(),
+                  Text('\$${_total.toStringAsFixed(2)}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFFE65100))),
+                ]),
+              ])),
+
+              const SizedBox(height: 16),
+            ]),
+          ),
+        ),
+
+        // Place order button
+        Container(
+          color: Colors.white,
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFE65100), foregroundColor: Colors.white, minimumSize: const Size.fromHeight(54)),
+            onPressed: _placeOrder,
+            child: const Text('Place Order', style: TextStyle(fontSize: 16)),
+          ),
+        ),
+      ]),
+    );
+  }
+
+  Widget _section(String title, Widget child) => Container(
+    margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), boxShadow: const [BoxShadow(color: Color(0x14000000), blurRadius: 4, offset: Offset(0, 2))]),
+    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF212121))),
+      const SizedBox(height: 12),
+      child,
+    ]),
+  );
+
+  Widget _paymentTile(String value, String label) => RadioListTile<String>(
+    value: value, groupValue: _paymentMethod,
+    activeColor: const Color(0xFFE65100),
+    contentPadding: EdgeInsets.zero,
+    title: Text(label, style: const TextStyle(fontSize: 14)),
+    onChanged: (v) => setState(() => _paymentMethod = v!),
+  );
+
+  Widget _priceRow(String label, String value, {Color? valueColor}) => Padding(
+    padding: const EdgeInsets.only(bottom: 6),
+    child: Row(children: [
+      Text(label, style: const TextStyle(fontSize: 13, color: Color(0xFF616161))),
+      const Spacer(),
+      Text(value, style: TextStyle(fontSize: 13, color: valueColor ?? const Color(0xFF212121), fontWeight: valueColor != null ? FontWeight.bold : FontWeight.normal)),
+    ]),
+  );
 }

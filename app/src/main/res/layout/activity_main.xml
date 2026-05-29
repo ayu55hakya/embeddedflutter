@@ -1,222 +1,265 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
+    <!-- ── Main content ─────────────────────────────────────────────────── -->
     <LinearLayout
+        android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp"
-        android:gravity="center_horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Native Android Screen"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:id="@+id/status_text"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="UXCam: initializing..."
-            android:textSize="12sp"
-            android:textColor="#666666"
-            android:layout_marginBottom="24dp"
-            android:gravity="center" />
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:titleTextColor="@android:color/white"
+            app:title="EmbeddedFlutter" />
 
-        <!-- PII Section -->
-        <TextView
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="PII Masking"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-        <EditText
-            android:id="@+id/email_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Email (occluded)"
-            android:inputType="textEmailAddress"
-            android:layout_marginBottom="8dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp"
+                android:gravity="center_horizontal">
 
-        <EditText
-            android:id="@+id/password_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Password (occluded)"
-            android:inputType="textPassword"
-            android:layout_marginBottom="16dp" />
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Native Android Screen"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
 
-        <!-- Events Section -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Event Tracking"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
+                <TextView
+                    android:id="@+id/status_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="UXCam: initializing..."
+                    android:textSize="12sp"
+                    android:textColor="#666666"
+                    android:layout_marginBottom="24dp"
+                    android:gravity="center" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_log_event"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Log Native Event" />
+                <!-- PII Section -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="PII Masking"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_log_event_props"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Log Event With Properties" />
+                <EditText
+                    android:id="@+id/email_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Email (occluded)"
+                    android:inputType="textEmailAddress"
+                    android:layout_marginBottom="8dp" />
 
-        <!-- User Identity Section -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="User Identity"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp" />
+                <EditText
+                    android:id="@+id/password_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Password (occluded)"
+                    android:inputType="textPassword"
+                    android:layout_marginBottom="16dp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_set_identity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Set User Identity (Native)" />
+                <!-- Events Section -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Event Tracking"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_set_properties"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Set User Properties (Native)" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_log_event"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Log Native Event" />
 
-        <!-- Screen Tagging Section -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Screen Tagging"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_log_event_props"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Log Event With Properties" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_tag_screen"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tag Screen: NativeHome" />
+                <!-- User Identity Section -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="User Identity"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp" />
 
-        <!-- Navigation -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Navigation"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_set_identity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Set User Identity (Native)" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/open_flutter_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Open Flutter View"
-            app:backgroundTint="#6750A4" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_set_properties"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Set User Properties (Native)" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/open_webview_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Open WebView"
-            app:backgroundTint="#3D6B4F" />
+                <!-- Screen Tagging Section -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Screen Tagging"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/open_animation_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Open Animation Screen"
-            app:backgroundTint="#C0392B" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_tag_screen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tag Screen: NativeHome" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/open_lottie_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Open Lottie Animations"
-            app:backgroundTint="#E67E22" />
+                <!-- Navigation -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Navigation"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/open_dialogs_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Open Dialogs &amp; Alerts"
-            app:backgroundTint="#1565C0" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/open_flutter_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Open Flutter View"
+                    app:backgroundTint="#6750A4" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/open_compose_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Open Compose Screen"
-            app:backgroundTint="#00796B" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/open_webview_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Open WebView"
+                    app:backgroundTint="#3D6B4F" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/open_gallery_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Open Image Gallery"
-            app:backgroundTint="#BF360C" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/open_animation_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Open Animation Screen"
+                    app:backgroundTint="#C0392B" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/open_scroll_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Open Scroll Demo"
-            app:backgroundTint="#283593" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/open_lottie_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Open Lottie Animations"
+                    app:backgroundTint="#E67E22" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/open_dropdown_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Open Dropdown Demo"
-            app:backgroundTint="#2E7D32" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/open_dialogs_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Open Dialogs &amp; Alerts"
+                    app:backgroundTint="#1565C0" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/open_short_break_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="UXCam Short Break"
-            app:backgroundTint="#4527A0" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/open_compose_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Open Compose Screen"
+                    app:backgroundTint="#00796B" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/open_video_player_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Open Video Player"
-            app:backgroundTint="#212121" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/open_gallery_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Open Image Gallery"
+                    app:backgroundTint="#BF360C" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/open_live_activity_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Live Activity View"
-            app:backgroundTint="#2E7D32" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/open_scroll_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Open Scroll Demo"
+                    app:backgroundTint="#283593" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/open_chat_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Chat View"
-            app:backgroundTint="#1565C0" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/open_dropdown_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Open Dropdown Demo"
+                    app:backgroundTint="#2E7D32" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/open_short_break_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="UXCam Short Break"
+                    app:backgroundTint="#4527A0" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/open_video_player_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Open Video Player"
+                    app:backgroundTint="#212121" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/open_live_activity_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Live Activity View"
+                    app:backgroundTint="#2E7D32" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/open_chat_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Chat View"
+                    app:backgroundTint="#1565C0" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/open_ecom_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="E-commerce Demo"
+                    app:backgroundTint="#E65100" />
+
+            </LinearLayout>
+        </ScrollView>
 
     </LinearLayout>
-</ScrollView>
+
+    <!-- ── Navigation Drawer ────────────────────────────────────────────── -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_main"
+        app:menu="@menu/nav_drawer_menu" />
+
+</androidx.drawerlayout.widget.DrawerLayout>

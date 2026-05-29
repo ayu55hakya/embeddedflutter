@@ -5,7 +5,9 @@
       "Bash(./gradlew installDebug)",
       "Bash(adb shell *)",
       "Bash(flutter build *)",
-      "Bash(flutter analyze *)"
+      "Bash(flutter analyze *)",
+      "Bash(jar tf *)",
+      "Bash(grep -i \"UXCam.class\\\\|UXCam$\")"
     ]
   }
 }

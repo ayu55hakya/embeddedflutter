@@ -63,6 +63,11 @@
             android:name=".ChatActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".EcomLoginActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".EcomSignupActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".EcomFeedActivity" android:exported="false" />
+        <activity android:name=".EcomProductDetailActivity" android:exported="false" />
+        <activity android:name=".EcomCheckoutActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".CustomFlutterActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"

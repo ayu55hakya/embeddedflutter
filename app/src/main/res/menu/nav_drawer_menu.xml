@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Main -->
+    <group android:id="@+id/grp_main" android:checkableBehavior="single">
+        <item android:id="@+id/nav_home"    android:title="🏠  Home"           android:checked="true" />
+        <item android:id="@+id/nav_flutter" android:title="🦋  Flutter View" />
+    </group>
+
+    <!-- UI Views -->
+    <group android:id="@+id/grp_views" android:checkableBehavior="single">
+        <item android:id="@+id/nav_webview"    android:title="🌐  WebView" />
+        <item android:id="@+id/nav_animation"  android:title="✨  Animations" />
+        <item android:id="@+id/nav_lottie"     android:title="🎬  Lottie Animations" />
+        <item android:id="@+id/nav_dialogs"    android:title="💬  Dialogs &amp; Alerts" />
+        <item android:id="@+id/nav_compose"    android:title="🖼️  Compose View" />
+        <item android:id="@+id/nav_gallery"    android:title="🖼️  Image Gallery" />
+        <item android:id="@+id/nav_scroll"     android:title="📜  Scroll Demo" />
+        <item android:id="@+id/nav_dropdown"   android:title="🔽  Dropdown Demo" />
+        <item android:id="@+id/nav_video"      android:title="▶️  Video Player" />
+    </group>
+
+    <!-- Features -->
+    <group android:id="@+id/grp_features" android:checkableBehavior="single">
+        <item android:id="@+id/nav_live_activity" android:title="📡  Live Activity" />
+        <item android:id="@+id/nav_chat"          android:title="💬  Chat View" />
+        <item android:id="@+id/nav_ecom"          android:title="🛍️  E-commerce" />
+    </group>
+
+    <!-- UXCam -->
+    <group android:id="@+id/grp_uxcam" android:checkableBehavior="single">
+        <item android:id="@+id/nav_short_break" android:title="⏸️  UXCam Short Break" />
+    </group>
+
+</menu>
